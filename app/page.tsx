@@ -363,28 +363,9 @@ export default function Home() {
     return Object.keys(gradeSummary[0]).filter((k) => k !== "Metric");
   }, [gradeSummary]);
 
-  const sortedGradeModuleMetrics = useMemo(() => {
-    if (!gradeModuleMetrics.length || !echoModules.length) return gradeModuleMetrics;
-    const moduleOrder = echoModules.map((r) =>
-      String(r.Module ?? r.module ?? r["Module Name"] ?? r.module_name ?? "")
-    );
-    const orderMap = new Map<string, number>();
-    moduleOrder.forEach((mod, i) => { if (mod && !orderMap.has(mod)) orderMap.set(mod, i); });
-    const origMap = new Map<string, number>();
-    gradeModuleMetrics.forEach((r, i) => {
-      const mod = String(r.Module ?? r.module ?? "");
-      if (mod && !origMap.has(mod)) origMap.set(mod, i);
-    });
-    return [...gradeModuleMetrics].sort((a, b) => {
-      const mA = String(a.Module ?? a.module ?? "");
-      const mB = String(b.Module ?? b.module ?? "");
-      const oA = orderMap.get(mA), oB = orderMap.get(mB);
-      if (oA !== undefined && oB !== undefined) return oA - oB;
-      if (oA !== undefined) return -1;
-      if (oB !== undefined) return 1;
-      return (origMap.get(mA) ?? 0) - (origMap.get(mB) ?? 0);
-    });
-  }, [gradeModuleMetrics, echoModules]);
+  // gradeModuleMetrics arrives from the backend already in Canvas module order
+  // (built by iterating canvasOrderRows sorted by module_position), so no re-sort needed.
+  const sortedGradeModuleMetrics = gradeModuleMetrics;
 
   const kpis = useMemo(() => {
     const d = {
