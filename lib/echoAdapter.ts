@@ -181,7 +181,7 @@ export function buildEchoTables(
   const uidCol   = findCol(headers, CANDIDATES.user, false);
 
   // Parse time columns and compute per-row true view fraction
-  const rows = df.map((r) => {
+  const rows: Record<string, any>[] = df.map((r) => {
     const dur  = toSeconds(r[durCol]);
     const view = toSeconds(r[viewCol]);
     const trueFrac = dur > 0 && !isNaN(view) ? view / dur : NaN;
