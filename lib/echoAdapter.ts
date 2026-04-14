@@ -298,7 +298,7 @@ export function buildEchoTables(
           .map((r) => Number(r["# of Unique Viewers"]))
           .filter((n) => !isNaN(n));
         const avgOverall = items
-          .map((r) => Number(r["% of Video Viewed Overall"]))
+          .map((r) => Number(r["Available Video View %"]))
           .filter((n) => !isNaN(n));
         const viewers = mean(avgUniq);
         return {
