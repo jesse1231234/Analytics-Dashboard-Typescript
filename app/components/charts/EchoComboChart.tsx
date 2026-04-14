@@ -58,6 +58,7 @@ export default function EchoComboChart({
 
     const viewersKey =
       pickKey(keys, [
+        "Average Unique Viewers",
         "Total Unique Viewers",
         "# of Students Viewing",
         "# Students Viewing",

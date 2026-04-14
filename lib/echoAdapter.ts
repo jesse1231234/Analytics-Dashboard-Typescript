@@ -304,7 +304,7 @@ export function buildEchoTables(
         return {
           Module: module,
           "Average View %": mean(avgViews),
-          "Total Unique Viewers": viewers != null ? Math.round(viewers) : null,
+          "Average Unique Viewers": viewers != null ? Math.round(viewers) : null,
           "Average Available Video View %": mean(avgOverall),
           "# of Students": classTotalStudents ?? null,
         };

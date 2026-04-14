@@ -23,7 +23,7 @@ const ECHO_SUMMARY_COLS = [
   "Media Title", "Video Duration", "# of Unique Views", "Total Views",
   "Total Watch Time (Min)", "Average View %", "Course Viewing %", "Available Video View %",
 ];
-const ECHO_MODULE_COLS       = ["Module", "Average View %", "Total Unique Viewers", "Average Available Video View %"];
+const ECHO_MODULE_COLS       = ["Module", "Average View %", "Average Unique Viewers", "Average Available Video View %"];
 const GRADEBOOK_MODULE_COLS  = ["Module", "Avg % Turned In", "Module Average Excluding Zeros", "# of Assignments"];
 const ECHO_SUMMARY_PERCENT_COLS   = ["Average View %", "Course Viewing %", "Available Video View %"];
 const ECHO_MODULE_PERCENT_COLS    = ["Average View %", "Average Available Video View %"];
@@ -31,21 +31,21 @@ const GRADEBOOK_MODULE_PERCENT_COLS = ["Avg % Turned In", "Module Average Exclud
 
 // ---- Column help text ----
 const COLUMN_HELP_TEXT: Record<string, string> = {
-  "Media Title":                        "Name of the Echo360 media item as published to students.",
-  "Video Duration":                     "Total runtime of the media in hours:minutes:seconds.",
+  "Media Title":                        "Title of the Echo360 media.",
+  "Video Duration":                     "Total video duration.",
   "# of Unique Views":                  "Distinct students who watched this media at least once.",
   "# of Unique Viewers":                "Distinct students who watched this media at least once.",
   "Total Views":                        "Total number of views across all students.",
   "Total Watch Time (Min)":             "Total minutes watched across all viewers.",
-  "Average View %":                     "Average portion of the video watched per student viewer.",
-  "Course Viewing %":                   "Percent of enrolled students who viewed this media.",
-  "Available Video View %":             "Share of total video minutes watched across all viewers.",
-  "Module":                             "Canvas module that contains these Echo360 media items or assignments.",
-  "Total Unique Viewers":               "Students who watched any Echo360 media within this module.",
-  "Average Available Video View %":     "Combined percentage of available video watched by the viewing students.",
+  "Average View %":                     "Average % of video watched once clicking play.",
+  "Course Viewing %":                   "% of students who clicked play.",
+  "Available Video View %":             "% of video available across all students that was actually viewed.",
+  "Module":                             "Module title.",
+  "Average Unique Viewers":             "Average number of users who clicked play on videos in this module.",
+  "Average Available Video View %":     "Average % of video available across all students that was actually viewed in this module.",
   "Avg % Turned In":                    "Average submission rate for assignments within the module.",
-  "Module Average Excluding Zeros":     "Mean assignment score ignoring missing (zero) submissions.",
-  "# of Assignments":                   "Number of assignments mapped to the module.",
+  "Module Average Excluding Zeros":     "Mean assignment score ignoring missing submissions.",
+  "# of Assignments":                   "Number of assignments located within the module.",
 };
 
 // ---- Tooltip ----
@@ -751,12 +751,12 @@ export default function Home() {
               {[
                 {
                   label: "Students Enrolled",
-                  tip: "Unique students with Canvas enrollments included in these metrics.",
+                  tip: "The number of enrolled students.",
                   value: kpis.studentsEnrolled !== null ? kpis.studentsEnrolled.toLocaleString() : "—",
                 },
                 {
                   label: "Average View %",
-                  tip: "Average Echo360 engagement percentage across all published media.",
+                  tip: "Average percentage of video watched once clicking play.",
                   value: kpis.averageViewPercent !== null ? `${(kpis.averageViewPercent * 100).toFixed(1)}%` : "—",
                 },
                 {
