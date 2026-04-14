@@ -339,6 +339,9 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"tables" | "charts" | "ai">("tables");
 
   const [courseId, setCourseId] = useState("");
+  const [courseTitle, setCourseTitle]         = useState<string | null>(null);
+  const [courseTitleState, setCourseTitleState] = useState<"idle" | "loading" | "found" | "error">("idle");
+  const [courseTitleError, setCourseTitleError] = useState<string | null>(null);
   const [canvasCsv, setCanvasCsv] = useState<File | null>(null);
   const [echoCsv, setEchoCsv]     = useState<File | null>(null);
 
@@ -349,6 +352,37 @@ export default function Home() {
 
   const [error, setError]   = useState<string | null>(null);
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
+
+  // Debounced course title lookup — fires 600ms after user stops typing
+  useEffect(() => {
+    const trimmed = courseId.trim();
+    if (!trimmed || isNaN(Number(trimmed))) {
+      setCourseTitle(null);
+      setCourseTitleState("idle");
+      setCourseTitleError(null);
+      return;
+    }
+    setCourseTitleState("loading");
+    setCourseTitle(null);
+    setCourseTitleError(null);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/course-name?course_id=${encodeURIComponent(trimmed)}`);
+        const data = await res.json();
+        if (!res.ok || data.error) {
+          setCourseTitleState("error");
+          setCourseTitleError(data.error ?? "Could not look up course");
+        } else {
+          setCourseTitle(data.name);
+          setCourseTitleState("found");
+        }
+      } catch {
+        setCourseTitleState("error");
+        setCourseTitleError("Network error looking up course");
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [courseId]);
 
   const [exportingPDF, setExportingPDF] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
@@ -612,10 +646,38 @@ export default function Home() {
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-csuGreen focus:border-csuGreen"
               placeholder="e.g., 123456"
             />
+
+            {/* Course title confirmation */}
+            <div className="mt-2 min-h-[1.5rem]">
+              {courseTitleState === "loading" && (
+                <p className="text-sm text-slate-500 flex items-center gap-1.5">
+                  <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-300 border-t-slate-600" />
+                  Looking up course…
+                </p>
+              )}
+              {courseTitleState === "found" && courseTitle && (
+                <p className="text-sm text-green-700 flex items-center gap-1.5">
+                  <svg className="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
+                  </svg>
+                  <span><span className="font-medium">Course found:</span> {courseTitle}</span>
+                </p>
+              )}
+              {courseTitleState === "error" && (
+                <p className="text-sm text-red-600 flex items-center gap-1.5">
+                  <svg className="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clipRule="evenodd" />
+                  </svg>
+                  {courseTitleError}
+                </p>
+              )}
+            </div>
+
             <div className="mt-4">
               <button
                 onClick={() => setStep(2)}
-                className="rounded-xl bg-slate-900 text-white px-4 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-csuGreen"
+                disabled={!courseId.trim()}
+                className="rounded-xl bg-slate-900 text-white px-4 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-csuGreen disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Continue
               </button>
