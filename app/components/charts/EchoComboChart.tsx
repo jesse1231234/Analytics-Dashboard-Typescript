@@ -58,6 +58,7 @@ export default function EchoComboChart({
 
     const viewersKey =
       pickKey(keys, [
+        "Total Unique Viewers",
         "# of Students Viewing",
         "# Students Viewing",
         "Students Viewing",
@@ -65,7 +66,12 @@ export default function EchoComboChart({
       ]) ?? null;
 
     const overallKey =
-      pickKey(keys, ["Overall View %", "% of Video Viewed Overall", "Overall % Viewed"]) ?? null;
+      pickKey(keys, [
+        "Average Available Video View %",
+        "Overall View %",
+        "% of Video Viewed Overall",
+        "Overall % Viewed",
+      ]) ?? null;
 
     const avgKey =
       pickKey(keys, ["Average View %", "Avg View %", "Average % Viewed"]) ?? null;
@@ -162,7 +168,7 @@ export default function EchoComboChart({
       </div>
       {!hasStack && (
         <div className="text-xs text-slate-500 mt-2">
-          Note: stacked bars require both "# of Students Viewing" and "# of Students".
+          Note: stacked bars require both "Total Unique Viewers" and "# of Students".
         </div>
       )}
     </div>

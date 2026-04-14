@@ -43,7 +43,7 @@ export default function GradebookComboChart({ rows, title }: { rows: Row[]; titl
     const keys = Object.keys(safe[0] ?? {});
     const xKey = pickKey(keys, ["Module", "module", "Module Name", "module_name"]) ?? "Module";
     const lineAKey = pickKey(keys, ["Avg % Turned In", "Avg Turned In %", "% Turned In"]) ?? null;
-    const lineBKey = pickKey(keys, ["Avg Average Excluding Zeros", "Avg Excluding Zeros", "Average Excluding Zeros"]) ?? null;
+    const lineBKey = pickKey(keys, ["Module Average Excluding Zeros", "Avg Average Excluding Zeros", "Avg Excluding Zeros", "Average Excluding Zeros"]) ?? null;
     const data = safe.map((r) => ({
       __x: String(r[xKey] ?? ""),
       __a: lineAKey ? toNumber(r[lineAKey]) : null,

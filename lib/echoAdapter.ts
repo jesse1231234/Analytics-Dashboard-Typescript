@@ -221,12 +221,12 @@ export function buildEchoTables(
     };
 
     if (classTotalStudents && classTotalStudents > 0) {
-      row["% of Students Viewing"] = uniqViewers / classTotalStudents;
+      row["Course Viewing %"] = uniqViewers / classTotalStudents;
       const denom = dur * classTotalStudents;
-      row["% of Video Viewed Overall"] = denom > 0 ? sumViewSec / denom : null;
+      row["Available Video View %"] = denom > 0 ? sumViewSec / denom : null;
     } else {
-      row["% of Students Viewing"] = null;
-      row["% of Video Viewed Overall"] = null;
+      row["Course Viewing %"] = null;
+      row["Available Video View %"] = null;
     }
 
     echoSummary.push(row);
@@ -304,8 +304,8 @@ export function buildEchoTables(
         return {
           Module: module,
           "Average View %": mean(avgViews),
-          "# of Students Viewing": viewers != null ? Math.round(viewers) : null,
-          "Overall View %": mean(avgOverall),
+          "Total Unique Viewers": viewers != null ? Math.round(viewers) : null,
+          "Average Available Video View %": mean(avgOverall),
           "# of Students": classTotalStudents ?? null,
         };
       });

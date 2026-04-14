@@ -235,8 +235,8 @@ export function buildGradebookTables(
       moduleMetrics.push({
         Module: mod,
         "Avg % Turned In": meanOf(pctIn),
-        "Avg Average Excluding Zeros": meanOf(excl0),
-        n_assignments: uniqueCols.length,
+        "Module Average Excluding Zeros": meanOf(excl0),
+        "# of Assignments": uniqueCols.length,
       });
     }
   }

@@ -21,32 +21,31 @@ type AnalyzeResponse = {
 // ---- Column presets ----
 const ECHO_SUMMARY_COLS = [
   "Media Title", "Video Duration", "# of Unique Views", "Total Views",
-  "Total Watch Time (Min)", "Average View %", "% of Students Viewing", "% of Video Viewed Overall",
+  "Total Watch Time (Min)", "Average View %", "Course Viewing %", "Available Video View %",
 ];
-const ECHO_MODULE_COLS       = ["Module", "Average View %", "# of Students Viewing", "Overall View %", "# of Students"];
-const GRADEBOOK_MODULE_COLS  = ["Module", "Avg % Turned In", "Avg Average Excluding Zeros", "n_assignments"];
-const ECHO_SUMMARY_PERCENT_COLS   = ["Average View %", "% of Students Viewing", "% of Video Viewed Overall"];
-const ECHO_MODULE_PERCENT_COLS    = ["Average View %", "Overall View %"];
-const GRADEBOOK_MODULE_PERCENT_COLS = ["Avg % Turned In", "Avg Average Excluding Zeros"];
+const ECHO_MODULE_COLS       = ["Module", "Average View %", "Total Unique Viewers", "Average Available Video View %"];
+const GRADEBOOK_MODULE_COLS  = ["Module", "Avg % Turned In", "Module Average Excluding Zeros", "# of Assignments"];
+const ECHO_SUMMARY_PERCENT_COLS   = ["Average View %", "Course Viewing %", "Available Video View %"];
+const ECHO_MODULE_PERCENT_COLS    = ["Average View %", "Average Available Video View %"];
+const GRADEBOOK_MODULE_PERCENT_COLS = ["Avg % Turned In", "Module Average Excluding Zeros"];
 
 // ---- Column help text ----
 const COLUMN_HELP_TEXT: Record<string, string> = {
-  "Media Title":                  "Name of the Echo360 media item as published to students.",
-  "Video Duration":               "Total runtime of the media in hours:minutes:seconds.",
-  "# of Unique Views":            "Distinct students who watched this media at least once.",
-  "# of Unique Viewers":          "Distinct students who watched this media at least once.",
-  "Total Views":                  "Total number of views across all students.",
-  "Total Watch Time (Min)":       "Total minutes watched across all viewers.",
-  "Average View %":               "Average portion of the video watched per student viewer.",
-  "% of Students Viewing":        "Percent of enrolled students who viewed this media.",
-  "% of Video Viewed Overall":    "Share of total video minutes watched across all viewers.",
-  "Module":                       "Canvas module that contains these Echo360 media items or assignments.",
-  "# of Students Viewing":        "Students who watched any Echo360 media within this module.",
-  "Overall View %":               "Combined percentage of media watched by the viewing students.",
-  "# of Students":                "Total students in the course for comparison to viewers.",
-  "Avg % Turned In":              "Average submission rate for assignments within the module.",
-  "Avg Average Excluding Zeros":  "Mean assignment score ignoring missing (zero) submissions.",
-  "n_assignments":                "Number of assignments mapped to the module.",
+  "Media Title":                        "Name of the Echo360 media item as published to students.",
+  "Video Duration":                     "Total runtime of the media in hours:minutes:seconds.",
+  "# of Unique Views":                  "Distinct students who watched this media at least once.",
+  "# of Unique Viewers":                "Distinct students who watched this media at least once.",
+  "Total Views":                        "Total number of views across all students.",
+  "Total Watch Time (Min)":             "Total minutes watched across all viewers.",
+  "Average View %":                     "Average portion of the video watched per student viewer.",
+  "Course Viewing %":                   "Percent of enrolled students who viewed this media.",
+  "Available Video View %":             "Share of total video minutes watched across all viewers.",
+  "Module":                             "Canvas module that contains these Echo360 media items or assignments.",
+  "Total Unique Viewers":               "Students who watched any Echo360 media within this module.",
+  "Average Available Video View %":     "Combined percentage of available video watched by the viewing students.",
+  "Avg % Turned In":                    "Average submission rate for assignments within the module.",
+  "Module Average Excluding Zeros":     "Mean assignment score ignoring missing (zero) submissions.",
+  "# of Assignments":                   "Number of assignments mapped to the module.",
 };
 
 // ---- Tooltip ----
@@ -819,16 +818,16 @@ export default function Home() {
 
             {activeTab === "tables" && (
               <div role="tabpanel" id="panel-tables" aria-labelledby="tab-tables" className="grid gap-4">
-                <Table title="Echo Summary"           rows={echoSummary}              columns={ECHO_SUMMARY_COLS}       percentCols={ECHO_SUMMARY_PERCENT_COLS}   maxRows={200} />
-                <Table title="Echo Module Table"      rows={echoModules}              columns={ECHO_MODULE_COLS}        percentCols={ECHO_MODULE_PERCENT_COLS}    maxRows={200} />
+                <Table title="Individual Video Analytics"          rows={echoSummary}              columns={ECHO_SUMMARY_COLS}       percentCols={ECHO_SUMMARY_PERCENT_COLS}   maxRows={200} />
+                <Table title="Module Level Video Analytics"        rows={echoModules}              columns={ECHO_MODULE_COLS}        percentCols={ECHO_MODULE_PERCENT_COLS}    maxRows={200} />
                 <Table
-                  title="Gradebook Summary Rows"
+                  title="Assignment Analytics"
                   rows={gradeSummary}
                   columns={gradeSummary?.[0]?.Metric ? ["Metric", ...Object.keys(gradeSummary[0]).filter((k) => k !== "Metric")] : undefined}
                   percentCols={gradeSummaryPercentCols}
                   maxRows={50}
                 />
-                <Table title="Gradebook Module Metrics" rows={sortedGradeModuleMetrics} columns={GRADEBOOK_MODULE_COLS} percentCols={GRADEBOOK_MODULE_PERCENT_COLS} maxRows={200} />
+                <Table title="Module Level Assignment Analytics" rows={sortedGradeModuleMetrics} columns={GRADEBOOK_MODULE_COLS} percentCols={GRADEBOOK_MODULE_PERCENT_COLS} maxRows={200} />
               </div>
             )}
 
@@ -925,7 +924,7 @@ export default function Home() {
 
         {echoSummary.length > 0 && (
           <div data-pdf-section="echo-summary" className="p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-3">Echo Summary</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-3">Individual Video Analytics</h2>
             <table className="w-full text-xs border-collapse border border-slate-300">
               <thead><tr className="bg-slate-100">
                 {ECHO_SUMMARY_COLS.filter((c) => echoSummary[0]?.[c] !== undefined).map((c) => (
@@ -949,7 +948,7 @@ export default function Home() {
         <div data-pdf-section="module-tables" className="p-6">
           {echoModules.length > 0 && (
             <div className="mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 mb-3">Echo Module Metrics</h2>
+              <h2 className="text-lg font-semibold text-slate-900 mb-3">Module Level Video Analytics</h2>
               <table className="w-full text-xs border-collapse border border-slate-300">
                 <thead><tr className="bg-slate-100">
                   {ECHO_MODULE_COLS.filter((c) => echoModules[0]?.[c] !== undefined).map((c) => (
@@ -977,7 +976,7 @@ export default function Home() {
               chunks.push(metricCol ? [metricCol, ...dataCols.slice(i, i + 5)] : dataCols.slice(i, i + 5));
             return (
               <div>
-                <h2 className="text-lg font-semibold text-slate-900 mb-3">Gradebook Summary</h2>
+                <h2 className="text-lg font-semibold text-slate-900 mb-3">Assignment Analytics</h2>
                 {chunks.map((cols, ci) => (
                   <div key={ci} className={ci > 0 ? "mt-4" : ""}>
                     {chunks.length > 1 && <p className="text-xs text-slate-500 mb-1">Part {ci + 1} of {chunks.length}</p>}
@@ -1006,7 +1005,7 @@ export default function Home() {
 
         {sortedGradeModuleMetrics.length > 0 && (
           <div data-pdf-section="gradebook-module" className="p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-3">Gradebook Module Metrics</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-3">Module Level Assignment Analytics</h2>
             <table className="w-full text-xs border-collapse border border-slate-300">
               <thead><tr className="bg-slate-100">
                 {GRADEBOOK_MODULE_COLS.filter((c) => sortedGradeModuleMetrics[0]?.[c] !== undefined).map((c) => (
