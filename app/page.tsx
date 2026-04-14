@@ -579,10 +579,9 @@ export default function Home() {
         <header className="mb-6">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-semibold tracking-tight text-slate-900">CLE Analytics Dashboard</h1>
+              <h1 className="text-2xl font-semibold tracking-tight text-slate-900">CSU Online Analytics Dashboard</h1>
               <p className="mt-1 text-sm text-slate-600">Canvas Gradebook + Echo360 analytics</p>
             </div>
-            <div className="text-xs text-slate-500">Vercel (Full-Stack)</div>
           </div>
           <div className="mt-5 border-t border-slate-200" />
 
@@ -740,7 +739,12 @@ export default function Home() {
         {step === 3 && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-semibold text-slate-900">Review Insights</h2>
+              <div>
+                <h2 className="text-lg font-semibold text-slate-900">Review Insights</h2>
+                {courseTitle && (
+                  <p className="mt-0.5 text-sm text-slate-600">{courseTitle}</p>
+                )}
+              </div>
               <button
                 onClick={exportToPDF}
                 disabled={exportingPDF}
@@ -896,7 +900,10 @@ export default function Home() {
       <div ref={printRef} style={{ display: "none", width: "800px" }} className="bg-white">
         <div data-pdf-section="header-kpis" className="p-6">
           <div className="mb-6 pb-4 border-b-2 border-slate-300">
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">CLE Analytics Report</h1>
+            <h1 className="text-2xl font-bold text-slate-900 mb-1">CSU Online Analytics Report</h1>
+            {courseTitle && (
+              <p className="text-base font-medium text-slate-700 mb-1">{courseTitle}</p>
+            )}
             <p className="text-sm text-slate-600">Course ID: {courseId}</p>
             <p className="text-sm text-slate-500">Generated: {new Date().toLocaleDateString()}</p>
           </div>
