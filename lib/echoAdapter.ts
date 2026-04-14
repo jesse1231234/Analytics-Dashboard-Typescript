@@ -309,6 +309,22 @@ export function buildEchoTables(
           "# of Students": classTotalStudents ?? null,
         };
       });
+
+    // Sort echoSummary by Canvas video order.
+    // joined is in Canvas order; matched rows carry _ekey (the normalized Echo title).
+    // Build a position map from _ekey → Canvas position, then sort echoSummary by it.
+    // Unmatched Echo videos (not found in Canvas) go to the end.
+    const ekeyOrder = new Map<string, number>();
+    let canvasPos = 0;
+    for (const r of joined) {
+      const ek = r._ekey as string | undefined;
+      if (ek && !ekeyOrder.has(ek)) ekeyOrder.set(ek, canvasPos++);
+    }
+    echoSummary.sort((a, b) => {
+      const posA = ekeyOrder.get(normText(String(a["Media Title"]))) ?? Infinity;
+      const posB = ekeyOrder.get(normText(String(b["Media Title"]))) ?? Infinity;
+      return posA - posB;
+    });
   }
 
   // ---- Student table (de-identified) ----
