@@ -272,13 +272,6 @@ function Table({
                         key={c}
                         scope="col"
                         onClick={() => handleHeaderClick(c)}
-                        title={
-                          isFirstCol
-                            ? "Click to reset to default (Canvas) order"
-                            : isActive
-                            ? `Sorted ${sortDir === "desc" ? "high → low" : "low → high"} — click to reverse`
-                            : "Click to sort"
-                        }
                         className={`text-left px-3 py-2.5 text-xs font-semibold text-slate-800 align-top border-r border-slate-300 last:border-r-0 select-none cursor-pointer ${
                           textHeavy ? "break-words" : "whitespace-nowrap"
                         } ${isOddCol ? "bg-slate-200 hover:bg-slate-300" : "bg-slate-100 hover:bg-slate-200"} ${
